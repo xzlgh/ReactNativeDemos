@@ -22,10 +22,10 @@ export default class Child extends React.Component<any> {
     )
   }
   handleClick = () => {
-    Toast.show('This is child!', 4)
+    Toast.show('This is child!', 2)
   }
   handleClick2 = () => {
-    Toast.show('第二次点击!', 5)
+    Toast.show('第二次点击!', 2)
   }
 }
 

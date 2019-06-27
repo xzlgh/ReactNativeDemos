@@ -34,11 +34,23 @@ class ToastView extends React.Component<Props> {
 
   constructor(props: any) {
     super(props);
-    console.log("constructor: ToastView")
     this.state = {
       message: props.message != undefined ? props.message : '',
       time: props.time !== undefined ? props.time*1000 : defaultTime
     }
+  }
+
+  // 因componentWillReceiveProps钩子函数被移除,暂时使用此钩子函数代替,后期如果想到好的处理方式,可做调整
+  shouldComponentUpdate(nextProps: any, nextState: any) {
+    if (nextProps.message !== this.props.message) {
+      this.setState({
+        message: nextProps.message != undefined ? nextProps.message : '',
+        time: nextProps.time !== undefined ? nextProps.time*1000 : defaultTime
+      })
+      clearTimeout(this.dismissHandler)
+      this.timingDismiss()
+    }
+    return true
   }
 
   render() {
