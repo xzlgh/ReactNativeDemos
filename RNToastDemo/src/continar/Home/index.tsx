@@ -21,7 +21,7 @@ class Home extends React.Component<any> {
   }
 
   ClickBtn = () => {
-    Toast.show('测试')
+    Toast.show(`测试测试测试测试测试测试测试测试测试`, 2, 'top')
     this.props.navigation.navigate('Child')
   }
 }
