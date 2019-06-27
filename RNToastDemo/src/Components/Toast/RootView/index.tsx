@@ -33,12 +33,38 @@ class RootView extends React.Component<any> {
     )
   }
 
-  static setView = (view: JSX.Element) => {
+  static setView = (view?: JSX.Element) => {
     viewRoot.setState({view: view})
   }
 }
 
+// 注册组件
+const originRegister = AppRegistry.registerComponent;
+
+AppRegistry.registerComponent = (appKey, component) => {
+  return originRegister(appKey, () => {
+    const OriginAppComponent = component();
+    return class extends React.Component {
+      render() {
+        return (
+          <View style={styles.container}>
+            <OriginAppComponent />
+            <RootView />
+          </View>
+        )
+      }
+    }
+  });
+};
+
+export default RootView
+
+
 export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    position: 'relative'
+  },
   // 蒙层设置
   rootView: {
     position: "absolute",

@@ -1,7 +1,8 @@
 import React from 'react'
 import { View, Text, TouchableOpacity, Button, StyleSheet  } from "react-native";
+import Toast from '../../Components/Toast'
 
-class Home extends React.Component {
+class Home extends React.Component<any> {
   static navigationOptions = {
     headerTitle: 'Home'
   }
@@ -20,7 +21,8 @@ class Home extends React.Component {
   }
 
   ClickBtn = () => {
-
+    Toast.show('测试')
+    this.props.navigation.navigate('Child')
   }
 }
 
