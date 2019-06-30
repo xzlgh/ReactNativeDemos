@@ -19,13 +19,13 @@ import { posConfigs } from './config'
 const {width, height} = Dimensions.get('window');
 const viewHeight = 35
 
-const defaultTime = 2000; // 默认toast展示时间
+const defaultTime = 2; // 默认toast展示时间
 
 interface Props {
   message: string, // toast提示信息
   time?: number, // toast显示时间
   position?: string, // toast显示时间
-  onDismiss: Function
+  onDismiss: Function // 隐藏toast函数
 }
 
 class ToastView extends React.Component<Props> {
@@ -51,7 +51,7 @@ class ToastView extends React.Component<Props> {
   }
 
   // 因componentWillReceiveProps钩子函数被移除,暂时使用此钩子函数代替,后期如果想到好的处理方式,可做调整
-  shouldComponentUpdate(nextProps: any, nextState: any) {
+  shouldComponentUpdate(nextProps: any) {
     if (nextProps.message !== this.props.message) {
       this.setState({
         message: nextProps.message != undefined ? nextProps.message : '',
@@ -69,7 +69,10 @@ class ToastView extends React.Component<Props> {
                       ? {bottom: this.moveAnim, opacity: this.opacityAnim}
                       : {top: this.moveAnim, opacity: this.opacityAnim}
     return (
-      <View style={styles.container} pointerEvents='none'>
+      <View 
+        style={styles.container}
+        // pointerEvents='none'
+      >
         <Animated.View 
           style={[styles.textContainer, position === 'bottom' && styles[posConfig.styleName], _animConfig]}>
           <Text style={styles.defaultText}>{message}</Text>

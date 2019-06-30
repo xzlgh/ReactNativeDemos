@@ -14,18 +14,27 @@ export default class Child extends React.Component<any> {
         </View>
         <View style={{margin: 20}}>
           <Button 
-            title="再次点击"
+            title="显示loading"
             onPress={this.handleClick2}
+          />
+        </View>
+        <View style={{margin: 20}}>
+          <Button 
+            title="隐藏toast"
+            onPress={this.handleClick3}
           />
         </View>
       </View>
     )
   }
   handleClick = () => {
-    Toast.show('This is child!', 2)
+    Toast.info('This is child!', 4)
   }
   handleClick2 = () => {
-    Toast.show('第二次点击!', 2)
+    Toast.loading()
+  }
+  handleClick3 = () => {
+    Toast.hide()
   }
 }
 
