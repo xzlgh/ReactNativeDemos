@@ -26,6 +26,7 @@ class Toast {
     RootView.setView(<LoadingView 
       text={text}
       time={time}
+      onDismiss={this.hide}
     />)
   }
 }

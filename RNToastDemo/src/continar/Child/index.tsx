@@ -17,6 +17,12 @@ export default class Child extends React.Component<any> {
       <View>
         <View style={{margin: 20}}>
           <Button 
+            title="验证toast是否可一pointerEvents"
+            onPress={this.handleClick4}
+          />
+        </View>
+        <View style={{margin: 20}}>
+          <Button 
             title="点我"
             onPress={this.handleClick}
           />
@@ -33,17 +39,29 @@ export default class Child extends React.Component<any> {
             onPress={this.handleClick3}
           />
         </View>
+        <View style={{margin: 20}}>
+          <Text>{num}</Text>
+        </View>
       </View>
     )
   }
   handleClick = () => {
-    Toast.info('This is child!', 4)
+    Toast.info('This is child!', 4000)
   }
   handleClick2 = () => {
-    Toast.loading()
+    Toast.loading('', 3000)
+    setTimeout(() => {
+      console.log("我执行了")
+      Toast.info('测试我的Info', 4000)
+    }, 2000)
   }
   handleClick3 = () => {
     Toast.hide()
+  }
+  handleClick4 = () => {
+    let {num}: any = this.state
+    num++
+    this.setState({num: num})
   }
 }
 

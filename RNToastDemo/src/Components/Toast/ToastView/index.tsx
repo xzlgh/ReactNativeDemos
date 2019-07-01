@@ -19,7 +19,7 @@ import { posConfigs } from './config'
 const {width, height} = Dimensions.get('window');
 const viewHeight = 35
 
-const defaultTime = 2; // 默认toast展示时间
+const defaultTime = 2000; // 默认toast展示时间
 
 interface Props {
   message: string, // toast提示信息
@@ -43,7 +43,7 @@ class ToastView extends React.Component<Props> {
     let _config = posConfigs[props.position]
     this.state = {
       message: props.message != undefined ? props.message : '',
-      time: props.time*1000,
+      time: props.time,
       position: props.position,
       posConfig: _config
     }
@@ -71,7 +71,7 @@ class ToastView extends React.Component<Props> {
     return (
       <View 
         style={styles.container}
-        // pointerEvents='none'
+        pointerEvents='none'
       >
         <Animated.View 
           style={[styles.textContainer, position === 'bottom' && styles[posConfig.styleName], _animConfig]}>
