@@ -21,6 +21,17 @@ class Toast {
     />)
   };
 
+  // success
+  static success(msg?: string, time?: number, position?: string) {
+    RootView.setView(<ToastView 
+      message={msg || ''}
+      time={time}
+      position={position}
+      isSuccess={true}
+      onDismiss={this.hide}
+    />)
+  }
+
   // Toast Loading
   static loading(text?:string, time?: number, minTime?: number, maxTime?: number) {
     RootView.setView(<LoadingView 

@@ -40,6 +40,12 @@ export default class Child extends React.Component<any> {
           />
         </View>
         <View style={{margin: 20}}>
+          <Button 
+            title="toast success click"
+            onPress={this.handleClick5}
+          />
+        </View>
+        <View style={{margin: 20}}>
           <Text>{num}</Text>
         </View>
       </View>
@@ -62,6 +68,9 @@ export default class Child extends React.Component<any> {
     let {num}: any = this.state
     num++
     this.setState({num: num})
+  }
+  handleClick5 = () => {
+    Toast.success('login', 20000)
   }
 }
 

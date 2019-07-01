@@ -10,8 +10,8 @@ export const posConfigs: any = {
     endAnimHeight: 34
   },
   center: {
-    startAnimHeight: height / 2 + 10,
-    endAnimHeight: height / 2 - 10
+    startAnimHeight: height / 2,
+    endAnimHeight: height / 2 - 30
   },
   top: {
     startAnimHeight: 16,

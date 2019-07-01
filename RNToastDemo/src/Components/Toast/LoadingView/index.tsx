@@ -10,8 +10,6 @@ interface Props {
 }
 
 class Loading extends React.Component<Props> {
-	_didFocusAction: any
-	_willBlurAction: any
 	_timer: any
 
 	static defaultProps = {
@@ -26,7 +24,7 @@ class Loading extends React.Component<Props> {
 		// 开启定时器前，先清理定时器
 		clearTimeout(this._timer)
 		this._timer = setTimeout(() => {
-			this.onDismiss()
+			this.dismiss()
 		}, time)
 	}
 
@@ -37,7 +35,7 @@ class Loading extends React.Component<Props> {
 		// 平滑过渡，接收下一个loading
 		clearTimeout(this._timer)
 		this._timer = setTimeout(() => {
-			this.onDismiss()
+			this.dismiss()
 		}, time)
 
     return true
@@ -68,7 +66,7 @@ class Loading extends React.Component<Props> {
 	}
 
 	// 移除loading
-	onDismiss = () => {
+	dismiss = () => {
     if (this.props.onDismiss) {
       this.props.onDismiss()
     }
