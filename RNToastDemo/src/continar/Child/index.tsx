@@ -23,31 +23,27 @@ export default class Child extends React.Component<any> {
         </View>
         <View style={{margin: 20}}>
           <Button 
-            title="再次点击"
+            title="显示loading"
             onPress={this.handleClick2}
           />
         </View>
         <View style={{margin: 20}}>
           <Button 
-            title="测试事件"
+            title="隐藏toast"
             onPress={this.handleClick3}
           />
-        </View>
-        <View style={{margin: 20}}>
-          <Text>{text + num}</Text>
         </View>
       </View>
     )
   }
   handleClick = () => {
-    Toast.show('This is child!', 5)
+    Toast.info('This is child!', 4)
   }
   handleClick2 = () => {
-    Toast.show('第二次点击!', 5)
+    Toast.loading()
   }
   handleClick3 = () => {
-    const {num}: any = this.state
-    this.setState({text: 'test text', num: num})
+    Toast.hide()
   }
 }
 

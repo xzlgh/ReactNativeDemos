@@ -6,7 +6,6 @@ import React from 'react'
 import {
   StyleSheet,
   View,
-  Text,
   AppRegistry
 } from 'react-native'
 
