@@ -69,7 +69,7 @@ class ToastView extends React.Component<Props> {
                       ? {bottom: this.moveAnim, opacity: this.opacityAnim}
                       : {top: this.moveAnim, opacity: this.opacityAnim}
     return (
-      <View style={styles.container} pointerEvents='none'>
+      <View style={styles.container}>
         <Animated.View 
           style={[styles.textContainer, position === 'bottom' && styles[posConfig.styleName], _animConfig]}>
           <Text style={styles.defaultText}>{message}</Text>
