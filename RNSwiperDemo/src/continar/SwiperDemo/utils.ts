@@ -2,24 +2,22 @@ import { Data } from './interface'
 
 /**
  * 
- * @param arr 需要填充的数组
+ * @param arr 需要填充的数组,数组长度需小于目标长度
  * @param len 需要满足的长度
  */
 export const fillArrayForLength = (arr: Data[], len: number): Data[] => {
   let _data = arr
-  let lenth = _data.length
+  let length = _data.length
 
-  if (length >= len) return _data
-
-  if (length < len && length < len - length) {
+  if (length < len - length) {
     _data.concat(_data)
     fillArrayForLength(_data, len)
-  }
-
-  let j = 0
-  while (length < len) {
-    _data.push(_data[j]);
-    j++;
+  } else {
+    let j = 0
+    while (length <= len) {
+      _data.push(_data[j]);
+      j++;
+    }
   }
 
   return _data
@@ -42,8 +40,12 @@ export const turnOfData = (data: Data[], showNumber: number) => {
   let endItem = _data[length - 1]
   if (length < showNumber) {
     // 填充数组
-    _data = fillArrayForLength(_data, length)
+    _data = fillArrayForLength(_data, showNumber)
+  } else {
+    _data.push(firstItem)
   }
+  _data.unshift(endItem)
+
   return _data
 }
 

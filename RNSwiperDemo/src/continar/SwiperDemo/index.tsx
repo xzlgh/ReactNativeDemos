@@ -34,10 +34,12 @@ class SwiperView extends React.Component<Props> {
 
   constructor(props: any) {
     super(props)
+    console.log(111111)
     this.state = {
       curIndex: 1,
       data: utils.turnOfData(props.sourceData, props.showItemNumber)
     }
+    console.log(22222)
     this.itemWidth = (client.width - 30) / props.showItemNumber
     this.sports = new Animated.Value(-itemWidth) // 设置动画初始值
   }
