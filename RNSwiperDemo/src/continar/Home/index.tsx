@@ -2,6 +2,7 @@ import React from 'react'
 import { View, Text, TouchableOpacity, Button, StyleSheet  } from "react-native";
 import Toast from '../../Components/Toast'
 import SwiperDemo from '../SwiperDemo'
+import Swipper from '../Swipper'
 
 import * as config from './config'
 
@@ -12,9 +13,10 @@ class Home extends React.Component<any> {
   }
   render() {
     return (
-      <SwiperDemo
-        sourceData={config.dataSource}
-      />
+      // <SwiperDemo
+      //   sourceData={config.dataSource}
+      // />
+      <Swipper sourceData={config.dataSource} />
     )
   }
 

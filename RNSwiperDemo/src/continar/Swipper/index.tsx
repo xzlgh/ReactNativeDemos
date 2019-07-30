@@ -21,13 +21,11 @@ import {
 import * as utils from './utils'
 
 const client = Dimensions.get('window')
-const itemWidth = (client.width - 30) / 5
 
 const DEFAULT_ITEM_NUMBER = 5
 
 class SwiperView extends React.Component<Props> {
 
-  // sports = new Animated.Value(0)
   itemHalfNumber = 0 // 可显示内容的数量
   itemWidth = 0 // 初始化一个item的宽度
   itemMinWidth = 0 // 初始化时最小的一个item宽度
@@ -45,16 +43,14 @@ class SwiperView extends React.Component<Props> {
 
     this.state = {
       curIndex: props.showItemNumber,
-      index: this.itemHalfNumber + props.showItemNumber,
       data: utils.turnOfData(props.sourceData, props.showItemNumber),
       sports: new Animated.Value(-(this.itemMinWidth * props.showItemNumber))
     }
-    // this.sports = new Animated.Value(-(this.itemMinWidth * props.showItemNumber)) // 设置动画初始值
   }
 
-  componentDidMount() {
-    // 转换sourceData数据
-    // 赋值给state
+  get centerIndex() {
+    let { curIndex }: any = this.state
+    return curIndex + this.itemHalfNumber
   }
 
   render() {
@@ -67,20 +63,20 @@ class SwiperView extends React.Component<Props> {
           </Animated.View>
         </View>
         <View style={styles.btnWrapper}>
-          <Button title="上一页" onPress={this.handlePressPre} />
-          <Button title="下一页" onPress={this.handlePressNext} />
+          <Button title="上一页" onPress={this.handlePressPre()} />
+          <Button title="下一页" onPress={this.handlePressNext()} />
         </View>
       </View>
     )
   }
 
   renderItem = (): JSX.Element[] => {
-    let { data, index }: any = this.state
+    let { data }: any = this.state
     return data.map((item: Data, ind: number): JSX.Element => {
       // 根据位置设置content的盒模型样式
-      let _boxWidth = utils.getBoxStyle(this.itemWidth, ind, index)
+      let _boxWidth = utils.getBoxStyle(this.itemWidth, ind, this.centerIndex)
       // 根据位置设置文字样式
-      let _contentStyle = utils.getCurContentStyle(styles, ind, index)
+      let _contentStyle = utils.getCurContentStyle(styles, ind, this.centerIndex)
       return (
         <View key={ind} style={[styles.item, { width: _boxWidth }]}>
           <Text style={[styles.itemContent, _contentStyle]} onPress={this.handleChooseItem(ind)}>
@@ -93,106 +89,32 @@ class SwiperView extends React.Component<Props> {
   
   // 点击具体值
   handleChooseItem = (clickIndex: number) => () => {
-    // 如果跳转到指定的位置，动画到指定的位置
-    const { curIndex, index }: any = this.state
-    let targetIndex = -1
+    // 跳转个数
+    const skipTimes = Math.abs(clickIndex - this.centerIndex)
+    if(skipTimes === 0) return
+    // 是否点右边的
+    const isForwer = this.centerIndex < clickIndex
     // 如果是往前翻
-    if (index > clickIndex) {
-      // targetIndex = clickIndex - (index - clickIndex)
-      this.handlePressPre()
-
-    // 如果是往后翻
-    } else if (index < clickIndex) {
-      this.handlePressNext()
-      // targetIndex = clickIndex + (clickIndex - index)
-    }
-
-    // if (targetIndex === -1) return
-
-    // let _value = targetIndex * this.itemMinWidth
-    // this.starAnimated({toValue: _value}, () => {
-    //   this.handleLoop(curIndex, targetIndex)
-    // })
+    ;(isForwer ? this.handlePressNext(skipTimes) : this.handlePressPre(skipTimes))()
   }
 
   // 下一个
-  handlePressNext = () => {
-    const { curIndex, sports }: any = this.state
-    const value = -(curIndex * this.itemMinWidth + this.itemMinWidth)
+  handlePressNext = (skipTimes: number = 1) => () => {
+    const { curIndex }: any = this.state
+    const value = -curIndex * this.itemMinWidth - skipTimes * this.itemMinWidth
 
     this.starAnimated({toValue: value}, () => {
-      this.handleLoop(curIndex, curIndex + 1)
+      this.handleLoop(curIndex, curIndex + skipTimes)
     })
-
-    // //开始执行动画
-    // Animated.timing(sports, {
-    //   toValue: value,
-    //   duration: 400,
-    //   easing: Easing.linear
-
-    // }).start(() => {
-    //   // 动画结束后的回调函数
-    //   this.handleLoop(curIndex, curIndex + 1)
-    // }); 
   }
 
   // 上一个
-  handlePressPre = () => {
-    const { curIndex, sports }: any = this.state
-    const value = -(curIndex * this.itemMinWidth - this.itemMinWidth)
+  handlePressPre = (skipTimes: number = 1) => () => {
+    const { curIndex }: any = this.state
+    const value = -curIndex * this.itemMinWidth + skipTimes * this.itemMinWidth
 
     this.starAnimated({toValue: value}, () => {
-      this.handleLoop(curIndex, curIndex - 1)
-    })
-
-    // // 动画效果
-    // Animated.timing(sports, {
-    //   toValue: value,
-    //   duration: 400,
-    //   easing: Easing.linear
-    // }).start(() => {
-    //   // 动画结束后的回调函数
-    //   this.handleLoop(curIndex, curIndex - 1)
-    // }); 
-  }
-
-  // 处理循环单个问题
-  handleLoop = (curIndex: number, nextIndex: number) => {
-    const { showItemNumber = DEFAULT_ITEM_NUMBER } = this.props
-    const { data }: any = this.state
-    let targetIndex = -1
-    console.log('handleloop: ', curIndex, nextIndex)
-    // 如果是往后翻，目标值大于显示数据长度时
-    if (curIndex < nextIndex && nextIndex > data.length - showItemNumber - 1) {
-      // 获取目标index
-      // targetIndex = data.length - showItemNumber
-      targetIndex = nextIndex % showItemNumber + showItemNumber
-      console.log('111111111111  ',targetIndex)
-    }
-    
-    // 如果是操作往前翻，当目标值小于原始数据的第一个值时
-    if (curIndex > nextIndex && nextIndex < showItemNumber + 1) {
-      // 获得目标index
-      targetIndex = data.length - showItemNumber * 2 + nextIndex
-      console.log('2222222222222222   ', targetIndex)
-    }
-
-    if (targetIndex === -1) {
-      console.log('33333333  ', nextIndex, nextIndex + this.itemHalfNumber, this.itemHalfNumber)
-      this.setState({ curIndex: nextIndex, index: nextIndex + this.itemHalfNumber })
-      return
-    }
-    console.log('44444444444  ', targetIndex)
-    this.skilpTo(targetIndex)
-  }
-
-  // 跳转到目标位置
-  skilpTo = (targetIndex: number) => {
-    const value = -(targetIndex * this.itemMinWidth)
-    this.setState({
-      curIndex: targetIndex, 
-      index: targetIndex + this.itemHalfNumber,
-      sports: new Animated.Value(value)
+      this.handleLoop(curIndex, curIndex - skipTimes)
     })
   }
 
@@ -205,6 +127,40 @@ class SwiperView extends React.Component<Props> {
       easing: Easing.linear
     }).start(() => {
       callback()
+    })
+  }
+
+  // 处理循环单个问题
+  handleLoop = (curIndex: number, nextIndex: number) => {
+    const { showItemNumber = DEFAULT_ITEM_NUMBER } = this.props
+    const { data }: any = this.state
+    let targetIndex = -1
+    // 如果是往后翻，目标值大于显示数据长度时
+    if (curIndex < nextIndex && nextIndex > data.length - showItemNumber - 1) {
+      // 获取目标index
+      // targetIndex = data.length - showItemNumber
+      targetIndex = nextIndex % showItemNumber + showItemNumber
+    }
+    
+    // 如果是操作往前翻，当目标值小于原始数据的第一个值时
+    if (curIndex > nextIndex && nextIndex < showItemNumber + 1) {
+      // 获得目标index
+      targetIndex = data.length - showItemNumber * 2 + nextIndex
+    }
+
+    if (targetIndex === -1) {
+      this.setState({ curIndex: nextIndex })
+      return
+    }
+    this.skilpTo(targetIndex)
+  }
+
+  // 跳转到目标位置
+  skilpTo = (targetIndex: number) => {
+    const value = -(targetIndex * this.itemMinWidth)
+    this.setState({
+      curIndex: targetIndex, 
+      sports: new Animated.Value(value)
     })
   }
 }
