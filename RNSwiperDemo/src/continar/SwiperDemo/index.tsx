@@ -100,7 +100,7 @@ class SwiperView extends React.Component<Props> {
     }).start(() => {
       // 动画结束后的回调函数
       this.handleLoop(curIndex, curIndex + 1)
-      this.setState({ curIndex: curIndex + 1, index: index + 1 })
+      // this.setState({ curIndex: curIndex + 1, index: index + 1 })
     }); 
   }
 
@@ -125,7 +125,7 @@ class SwiperView extends React.Component<Props> {
   // 处理循环单个问题
   handleLoop = (curIndex: number, nextIndex: number) => {
     const { showItemNumber=DEFAULT_ITEM_NUMBER } = this.props
-    const { data }: any = this.state
+    const { data, index }: any = this.state
     let targetIndex = -1
     // 如果是上一个当前为原始数据第一个
     if (curIndex > nextIndex && curIndex === showItemNumber + 1 && nextIndex === showItemNumber) {
@@ -138,7 +138,11 @@ class SwiperView extends React.Component<Props> {
       // 获得目标index
       targetIndex = showItemNumber
     }
-    if (targetIndex === -1) return
+    console.log(targetIndex, curIndex, nextIndex, '输出值')
+    if (targetIndex === -1) {
+      this.setState({ curIndex: nextIndex, index: nextIndex + Math.floor(showItemNumber / 2) })
+      return
+    }
     this.skilpTo(targetIndex)
   }
 
@@ -152,7 +156,7 @@ class SwiperView extends React.Component<Props> {
       duration: 0,
       easing: Easing.linear
     }).start()
-    // this.setState({curIndex: targetIndex, index: targetIndex + Math.floor(showItemNumber / 2)})
+    this.setState({curIndex: targetIndex, index: targetIndex + Math.floor(showItemNumber / 2)})
   }
 }
 
