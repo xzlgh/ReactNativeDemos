@@ -26,10 +26,6 @@ const DEFAULT_ITEM_NUMBER = 5
 
 class SwiperView extends React.Component<Props> {
 
-  itemHalfNumber = 0 // 可显示内容的数量
-  itemWidth = 0 // 初始化一个item的宽度
-  itemMinWidth = 0 // 初始化时最小的一个item宽度
-
   static defaultProps = {
     sourceData: [],
     showItemNumber: DEFAULT_ITEM_NUMBER
@@ -37,20 +33,34 @@ class SwiperView extends React.Component<Props> {
 
   constructor(props: any) {
     super(props)
-    this.itemHalfNumber = Math.floor(props.showItemNumber / 2)
-    this.itemWidth = (client.width - 30) / props.showItemNumber
-    this.itemMinWidth = this.itemWidth - this.itemHalfNumber * 5
 
     this.state = {
       curIndex: props.showItemNumber,
       data: utils.turnOfData(props.sourceData, props.showItemNumber),
-      sports: new Animated.Value(-(this.itemMinWidth * props.showItemNumber))
+      sports: new Animated.Value(-(this.minItemWidth * props.showItemNumber))
     }
+  }
+
+  /**  */
+  getItemWidthScale = (): number[] => {
+    // return [0.5, 0.15, 0.1]
+    return [0.4, 0.2, 0.1]
+    // return [0.2, 0.2, 0.2]
+  }
+
+  getItemWidth = (index: number): number => {
+    const scales = this.getItemWidthScale()
+    return (scales[index] || scales[scales.length - 1]) * (client.width - 30)
+  }
+
+  get minItemWidth() {
+    return this.getItemWidth(-1)
   }
 
   get centerIndex() {
     let { curIndex }: any = this.state
-    return curIndex + this.itemHalfNumber
+    let { showItemNumber }: any = this.props
+    return curIndex + Math.floor(showItemNumber / 2)
   }
 
   render() {
@@ -74,7 +84,7 @@ class SwiperView extends React.Component<Props> {
     let { data }: any = this.state
     return data.map((item: Data, ind: number): JSX.Element => {
       // 根据位置设置content的盒模型样式
-      let _boxWidth = utils.getBoxStyle(this.itemWidth, ind, this.centerIndex)
+      let _boxWidth = this.getItemWidth(Math.abs(ind - this.centerIndex))
       // 根据位置设置文字样式
       let _contentStyle = utils.getCurContentStyle(styles, ind, this.centerIndex)
       return (
@@ -101,7 +111,7 @@ class SwiperView extends React.Component<Props> {
   // 下一个
   handlePressNext = (skipTimes: number = 1) => () => {
     const { curIndex }: any = this.state
-    const value = -curIndex * this.itemMinWidth - skipTimes * this.itemMinWidth
+    const value = -curIndex * this.minItemWidth - skipTimes * this.minItemWidth
 
     this.starAnimated({toValue: value}, () => {
       this.handleLoop(curIndex, curIndex + skipTimes)
@@ -111,7 +121,7 @@ class SwiperView extends React.Component<Props> {
   // 上一个
   handlePressPre = (skipTimes: number = 1) => () => {
     const { curIndex }: any = this.state
-    const value = -curIndex * this.itemMinWidth + skipTimes * this.itemMinWidth
+    const value = -curIndex * this.minItemWidth + skipTimes * this.minItemWidth
 
     this.starAnimated({toValue: value}, () => {
       this.handleLoop(curIndex, curIndex - skipTimes)
@@ -157,7 +167,7 @@ class SwiperView extends React.Component<Props> {
 
   // 跳转到目标位置
   skilpTo = (targetIndex: number) => {
-    const value = -(targetIndex * this.itemMinWidth)
+    const value = -(targetIndex * this.minItemWidth)
     this.setState({
       curIndex: targetIndex, 
       sports: new Animated.Value(value)
