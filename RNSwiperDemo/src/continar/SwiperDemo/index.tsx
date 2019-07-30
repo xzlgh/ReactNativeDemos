@@ -1,15 +1,15 @@
 import React from 'react'
 import {
-  View, 
-  Text, 
-  Button, 
-  Image, 
-  TouchableOpacity, 
-  Easing, 
-  Animated, 
-  StyleSheet, 
-  Dimensions, 
-  PanResponder 
+  View,
+  Text,
+  Button,
+  Image,
+  TouchableOpacity,
+  Easing,
+  Animated,
+  StyleSheet,
+  Dimensions,
+  PanResponder
 } from 'react-native'
 
 import {
@@ -22,26 +22,29 @@ import * as utils from './utils'
 const client = Dimensions.get('window')
 const itemWidth = (client.width - 30) / 5
 
+const DEFAULT_ITEM_NUMBER = 5
+
 class SwiperView extends React.Component<Props> {
-  
+
   sports = new Animated.Value(0)
   itemWidth = 0 // 初始化一个item的宽度
+  itemMinWidth = 0 // 初始化时最小的一个item宽度
 
   static defaultProps = {
     sourceData: [],
-    showItemNumber: 5
+    showItemNumber: DEFAULT_ITEM_NUMBER
   }
 
   constructor(props: any) {
     super(props)
-    console.log(111111)
     this.state = {
-      curIndex: 1,
+      curIndex: props.showItemNumber,
+      index: Math.floor(props.showItemNumber / 2) + props.showItemNumber,
       data: utils.turnOfData(props.sourceData, props.showItemNumber)
     }
-    console.log(22222)
     this.itemWidth = (client.width - 30) / props.showItemNumber
-    this.sports = new Animated.Value(-itemWidth) // 设置动画初始值
+    this.itemMinWidth = this.itemWidth - Math.floor(props.showItemNumber / 2) * 5
+    this.sports = new Animated.Value(-(this.itemMinWidth * props.showItemNumber)) // 设置动画初始值
   }
 
   componentDidMount() {
@@ -54,100 +57,102 @@ class SwiperView extends React.Component<Props> {
       <View style={styles.app}>
         <View style={styles.box}>
           <Animated.View
-            style={[styles.swiperContain, {left: this.sports}]}
+            style={[styles.swiperContain, { left: this.sports }]}
           >
-            {/* {this.props.children} */}
             {this.renderItem()}
           </Animated.View>
         </View>
         <View style={styles.btnWrapper}>
-            <Button title="上一页" onPress={this.handlePressPre}/>
-            <Button title="下一页" onPress={this.handlePressNext}/>
-          </View>
+          {/* <Button title="上一页" onPress={this.handlePressPre} /> */}
+          <Button title="下一页" onPress={this.handlePressNext} />
+        </View>
       </View>
     )
   }
 
   renderItem = (): JSX.Element[] => {
-    let { data, curIndex }:any = this.state
-    return data.map((item: Data, index: number): JSX.Element => {
-      let isShowRs = index === curIndex
-      let curStyle = index === curIndex ? styles.itemChildrenCurrent : {}
+    let { data, index }: any = this.state
+    return data.map((item: Data, ind: number): JSX.Element => {
+      // 根据位置设置content的盒模型样式
+      let _boxWidth = utils.getBoxStyle(this.itemWidth, ind, index)
+      // 根据位置设置文字样式
+      let _contentStyle = utils.getCurContentStyle(styles, ind, index)
       return (
-        <View key={index} style={styles.item1}>
-          <Text style={[styles.itemChildren, curStyle]}>{item.text}</Text>
-          {isShowRs && <Text style={styles.itemChildrenPrefix}>Rs</Text>}
+        <View key={ind} style={[styles.item, { width: _boxWidth }]}>
+          <Text style={[styles.itemContent, _contentStyle]}>{item.text}</Text>
         </View>
       )
     })
   }
-
-  // 上一个
-  handlePressPre = () => {
-    this.animatedRight()
-  }
+  
   // 下一个
   handlePressNext = () => {
-    this.animatedLeft()
-  }
+    const { curIndex, index }: any = this.state
+    const { showItemNumber }: any = this.props
+    const value = -(curIndex * this.itemMinWidth + this.itemMinWidth)
 
-  // 向左的动画
-  animatedLeft = () => {
-    const { curIndex }:any = this.state  
-    const value = -(curIndex * itemWidth + itemWidth)
-
+    //开始执行动画
     Animated.timing(this.sports, {
       toValue: value,
+      duration: 700,
       easing: Easing.linear
-    }).start(); //开始执行动画
-    this.setState({curIndex: (curIndex+1)})
+
+    }).start(() => {
+      // 动画结束后的回调函数
+      this.handleLoop(curIndex, curIndex + 1)
+      this.setState({ curIndex: curIndex + 1, index: index + 1 })
+    }); 
   }
 
-  // 向右动画
-  animatedRight = () => {
-    const { curIndex }:any = this.state  
-    const value = -(curIndex * itemWidth - itemWidth)
+  // // 上一个
+  // handlePressPre = () => {
+  //   const { curIndex, index }: any = this.state
+  //   const { showItemNumber }: any = this.props
+  //   const value = -(curIndex * this.itemMinWidth - this.itemMinWidth)
 
+  //   // 动画效果
+  //   Animated.timing(this.sports, {
+  //     toValue: value,
+  //     duration: 700,
+  //     easing: Easing.linear
+  //   }).start(() => {
+  //     // 动画结束后的回调函数
+  //     this.handleLoop(curIndex, curIndex - 1)
+  //     this.setState({ curIndex: curIndex - 1, index: index - 1 })
+  //   }); 
+  // }
+
+  // 处理循环单个问题
+  handleLoop = (curIndex: number, nextIndex: number) => {
+    const { showItemNumber=DEFAULT_ITEM_NUMBER } = this.props
+    const { data }: any = this.state
+    let targetIndex = -1
+    // 如果是上一个当前为原始数据第一个
+    if (curIndex > nextIndex && curIndex === showItemNumber + 1 && nextIndex === showItemNumber) {
+      // 获取目标index
+      targetIndex = data.length - showItemNumber
+    }
+    
+    // 如果是操作下一个，当前原始数据为最后一个
+    if (curIndex < nextIndex && curIndex === (data.length - showItemNumber - 1) && nextIndex === (data.length - showItemNumber)) {
+      // 获得目标index
+      targetIndex = showItemNumber
+    }
+    if (targetIndex === -1) return
+    this.skilpTo(targetIndex)
+  }
+
+  // 跳转到目标位置
+  skilpTo = (targetIndex: number) => {
+    const { showItemNumber = DEFAULT_ITEM_NUMBER } = this.props
+    const value = -(targetIndex * this.itemMinWidth - this.itemMinWidth)
+    console.log("目标index:", targetIndex, "当前index", '')
     Animated.timing(this.sports, {
       toValue: value,
+      duration: 0,
       easing: Easing.linear
-    }).start(); //开始执行动画
-    this.setState({curIndex: (curIndex-1)})
-  }
-}
-
-class App extends React.Component {
-  render() {
-    return (
-      <View style={styles.app}>
-        <SwiperView>
-          <View style={styles.item1}>
-            <Text style={styles.itemChildren}>7000</Text>
-          </View>
-          <View style={styles.item2}>
-            <Text style={styles.itemChildren}>3000</Text>
-          </View>
-          <View style={styles.item1}>
-            <Text style={styles.itemChildren}>5000</Text>
-          </View>
-          <View style={styles.item2}>
-            <Text style={styles.itemChildren}>7000</Text>
-          </View>
-          <View style={styles.item1}>
-            <Text style={styles.itemChildren}>3000</Text>
-          </View>
-          <View style={styles.item2}>
-            <Text style={styles.itemChildren}>5000</Text>
-          </View>
-          <View style={styles.item1}>
-            <Text style={styles.itemChildren}>7000</Text>
-          </View>
-          <View style={styles.item2}>
-            <Text style={styles.itemChildren}>3000</Text>
-          </View>
-        </SwiperView>
-      </View>
-    )
+    }).start()
+    // this.setState({curIndex: targetIndex, index: targetIndex + Math.floor(showItemNumber / 2)})
   }
 }
 
@@ -171,35 +176,37 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
   },
 
-  item1: {
-    flex: 1,
+  item: {
     justifyContent: 'center',
-    backgroundColor: 'pink',
   },
 
-  item2: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'green',
-  },
-
-  itemChildren: {
-    color: '#939393',
+  itemContent: {
+    flexWrap:'nowrap',
     textAlign: 'center',
+    color: '#DBDBDB',
+    fontSize: 10,   
+    fontWeight: '500',     
+    fontFamily: 'SourceHanSansCN-Medium',
   },
 
-  itemChildrenCurrent: {
+  itemCurrentContent: {
     color: '#F3802C',
+    fontSize: 34,
   },
 
-  itemChildrenPrefix: {
-    color: '#F3802C',
-    textAlign: 'center'
+  itemAdjacentContent: {
+    color: '#939393',
+    fontSize: 18,
+  },
+
+  itemIntervalContent: {
+    color: '#DBDBDB',
+    fontSize: 10,
   },
 
   btnWrapper: {
-    marginTop: 30, 
-    flexDirection: 'row', 
+    marginTop: 30,
+    flexDirection: 'row',
     justifyContent: 'space-between',
     position: 'absolute',
     bottom: 80,
