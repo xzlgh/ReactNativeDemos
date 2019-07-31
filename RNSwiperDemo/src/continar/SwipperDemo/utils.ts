@@ -1,45 +1,18 @@
 import { Data } from './interface'
+import {
+  DEFAULT_ITEM_FIVE_WITH_SCALE
+} from './config'
+
 
 //#region  ============================== 业务逻辑函数 ===============================
-
-export const getBoxStyle = (itemWidth: any, mapIndex: number, curIndex: number) => {
-  // 如果是当前的content，启用当前样式
-  if (mapIndex === curIndex) {
-    return itemWidth + 30
-  // 如果是相邻的content，启用相邻的样式
-  } else if (mapIndex === curIndex + 1 || mapIndex === curIndex -1) {
-    return itemWidth - 5
-  // 如果是与当前content间隔的，启用间隔样式
-  } else if (mapIndex === curIndex + 2 || mapIndex === curIndex - 2) {
-    return itemWidth - 10
-  }
-  
-  return itemWidth - 10
-}
-
-
 /**
- * 获取文字样式
- * @param styles 样式对象
- * @param mapIndex 循环渲染时的数组下标
- * @param curIndex 当前选中的数组下标
+ * 获取默认的缩放比
+ * @returns 返回缩放比数组
  */
-export const getCurContentStyle = (styles: any, mapIndex: number, curIndex: number) => {  
-  // 如果是当前的content，启用当前样式
-  if (mapIndex === curIndex) {
-    return styles.itemCurrentContent
-
-  // 如果是相邻的content，启用相邻的样式
-  } else if (mapIndex === curIndex + 1 || mapIndex === curIndex -1) {
-    return styles.itemAdjacentContent
-
-  // 如果是与当前content间隔的，启用间隔样式
-  } else if (mapIndex === curIndex + 2 || mapIndex === curIndex - 2) {
-    return styles.itemIntervalContent
-  }
-  
-  return {}
+export const getDefaultScale = (): number[] => {
+  return DEFAULT_ITEM_FIVE_WITH_SCALE
 }
+
 
 /**
  * 将数据转换成轮播所需要的数组数据

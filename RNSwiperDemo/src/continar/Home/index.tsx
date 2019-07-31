@@ -1,8 +1,7 @@
 import React from 'react'
 import { View, Text, TouchableOpacity, Button, StyleSheet  } from "react-native";
 import Toast from '../../Components/Toast'
-import SwiperDemo from '../SwiperDemo'
-import Swipper from '../Swipper'
+import Swipper from '../SwipperDemo'
 
 import * as config from './config'
 
@@ -13,11 +12,9 @@ class Home extends React.Component<any> {
   }
   render() {
     return (
-      // <SwiperDemo
-      //   sourceData={config.dataSource}
-      // />
       <Swipper 
         sourceData={config.dataSource} 
+        defaultIndex={2}
         // showItemNumber={3}
         // widthScale={[0.4, 0.3]}
       />
