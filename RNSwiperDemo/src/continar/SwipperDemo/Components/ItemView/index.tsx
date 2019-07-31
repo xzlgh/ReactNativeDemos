@@ -30,6 +30,10 @@ class ItemView extends React.Component<ItemViewProps> {
     )
   }
 
+  // TODO 文字字体大小动画
+
+  // TODO 文字颜色动画
+
   // 获取组件盒子的字体大小
   getContentFontSize = (centerDistance: number): number => {
     const scales = this.props.scalingArr

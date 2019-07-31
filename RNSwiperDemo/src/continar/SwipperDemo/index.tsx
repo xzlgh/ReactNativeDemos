@@ -37,16 +37,10 @@ class SwiperView extends React.Component<SwiperProps> {
     super(props)
 
     this.state = {
-      curIndex: props.showItemNumber + props.defaultIndex,
+      curIndex: props.showItemNumber - Math.floor(props.showItemNumber / 2) + props.defaultIndex - 1,
       data: utils.turnOfData(props.sourceData, props.showItemNumber),
       sports: new Animated.Value(-(this.minItemWidth * props.showItemNumber))
     }
-  }
-
-  // 获取指定索引的文字字体大小
-  getItemContentFontSize = (index: number): number => {
-    const scales = this.getItemScaleArr
-    return (scales[index] || scales[scales.length - 1]) * config.DEFAULT_CONTENT_FONT_SIZE
   }
 
   // 获取可视的多个轮播宽度缩放比
@@ -66,6 +60,11 @@ class SwiperView extends React.Component<SwiperProps> {
     let { curIndex }: any = this.state
     let { showItemNumber }: any = this.props
     return curIndex + Math.floor(showItemNumber / 2)
+  }
+
+  componentDidMount() {
+    const { curIndex }:any = this.state
+    this.skilpTo(curIndex)
   }
 
   render() {
