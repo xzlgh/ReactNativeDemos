@@ -21,23 +21,31 @@ export const getDefaultScale = (): number[] => {
  * @returns Arrary  前后分别增加一个数据，帮助平滑过渡
  */
 export const turnOfData = (data: Data[], showNumber: number) => {
-  // 校验传入参数，确保正确
-  if (!data || data.length <= 0) return []
-  // 如果待显示的数据不够可视数据量，则按顺序截取数组里面的值
-  let _data = data
-  let length = _data.length
+  // // 校验传入参数，确保正确
+  // if (!data || data.length <= 0) return []
+  // // 如果待显示的数据不够可视数据量，则按顺序截取数组里面的值
+  // let _data = data
+  // let length = _data.length
 
-  if (length < showNumber) {
-    // 填充数组
-    _data = fillArrayForLength(_data, length, showNumber)
-  }
+  // if (length < showNumber) {
+  //   // 填充数组
+  //   _data = fillArrayForLength(_data, length, showNumber)
+  // }
 
-  let firstItems = _data.slice(0, showNumber)
-  let endItems = _data.slice(-showNumber)
-  _data = [...firstItems, ..._data]
-  _data = [..._data, ...endItems]
-
-  return _data
+  // let firstItems = _data.slice(0, showNumber)
+  // let endItems = _data.slice(-showNumber)
+  // _data = [...firstItems, ..._data]
+  // _data = [..._data, ...endItems]
+  let rawLen = data.length
+  let endPaddingLength = showNumber + Math.max(0, showNumber - rawLen)
+  let frontPaddingLength = showNumber
+  let result = []
+  let revertData = data.slice().reverse()
+  for(let i = 0; i < frontPaddingLength; i++) result.unshift(revertData[i % rawLen])
+  for(let i = 0; i < rawLen; i++) result.push(data[i])
+  for(let i = 0; i < endPaddingLength; i++) result.push(data[i % rawLen])
+  console.log(result)
+  return result
 }
 
 

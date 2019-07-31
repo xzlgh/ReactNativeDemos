@@ -28,7 +28,7 @@ const styles = config.styles
 class SwiperView extends React.Component<SwiperProps> {
 
   static defaultProps = {
-    defaultIndex: 0,
+    defaultIndex: 1,
     sourceData: [],
     showItemNumber: config.DEFAULT_ITEM_NUMBER
   }
@@ -114,6 +114,7 @@ class SwiperView extends React.Component<SwiperProps> {
   // 下一个
   handlePressNext = (skipTimes: number = 1) => {
     const { curIndex }: any = this.state
+    console.log(curIndex)
     const value = -curIndex * this.minItemWidth - skipTimes * this.minItemWidth
 
     this.starAnimated({ toValue: value }, () => {
@@ -145,20 +146,20 @@ class SwiperView extends React.Component<SwiperProps> {
 
   // 处理循环边界问题
   handleLoop = (nextIndex: number) => {
-    const { showItemNumber = config.DEFAULT_ITEM_NUMBER } = this.props
+    const { showItemNumber }: any = this.props
     const { data, curIndex }: any = this.state
 
     let targetIndex = -1
     // 如果是往后翻，目标值大于显示数据长度时
     if (curIndex < nextIndex && nextIndex > data.length - showItemNumber - 1) {
       // 获取目标index
-      targetIndex = nextIndex % showItemNumber + showItemNumber
+      targetIndex = nextIndex - showItemNumber - 1
     }
 
     // 如果是操作往前翻，当目标值小于原始数据的第一个值时
-    if (curIndex > nextIndex && nextIndex < showItemNumber + 1) {
+    if (curIndex > nextIndex && nextIndex < showItemNumber) {
       // 获得目标index
-      targetIndex = data.length - showItemNumber * 2 + nextIndex
+      targetIndex = nextIndex + showItemNumber + 1
     }
 
     targetIndex === -1 ? this.setState({ curIndex: nextIndex }) : this.skilpTo(targetIndex)

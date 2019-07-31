@@ -1,11 +1,14 @@
 export const dataSource = [
   {
-    text: '3000'
+    text: '一月'
   },
   {
-    text: '5000'
+    text: '二月'
   },
-  {
-    text: '7000'
-  }
+  // {
+  //   text: '三月'
+  // },
+  // {
+  //   text: '四月'
+  // }
 ]
