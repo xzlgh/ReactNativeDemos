@@ -16,7 +16,11 @@ class Home extends React.Component<any> {
       // <SwiperDemo
       //   sourceData={config.dataSource}
       // />
-      <Swipper sourceData={config.dataSource} />
+      <Swipper 
+        sourceData={config.dataSource} 
+        // showItemNumber={3}
+        // widthScale={[0.4, 0.3]}
+      />
     )
   }
 
