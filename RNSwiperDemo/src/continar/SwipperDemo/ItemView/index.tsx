@@ -1,12 +1,12 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
-import { ItemViewProps } from '../../interface'  
+import { ItemViewProps } from '../interface'  
 import { 
   DEFAULT_ITEM_FIVE_WITH_SCALE,
   DEFAULT_CONTENT_FONT_SIZE,
   DEFAULT_ITEM_CONTENT_COLOR_ARRAY,
   viewClient
-} from '../../config'
+} from '../config'
 
 class ItemView extends React.Component<ItemViewProps> {
 

@@ -21,7 +21,7 @@ import {
 import * as config from './config'
 import * as utils from './utils'
 
-import ItemView from './Components/ItemView'
+import ItemView from './ItemView'
 
 const styles = config.styles
 
@@ -63,23 +63,36 @@ class SwiperView extends React.Component<SwiperProps> {
   }
 
   componentDidMount() {
-    const { curIndex }:any = this.state
+    const { curIndex }: any = this.state
     this.skilpTo(curIndex)
   }
 
   render() {
     const { sports }: any = this.state
     return (
-      <View style={styles.app}>
-        <View style={styles.box}>
+      <View style={styles.box}>
+        <View style={styles.swiper}>
           <Animated.View style={[styles.swiperContain, { left: sports }]}>
             {this.renderItem()}
           </Animated.View>
         </View>
-        <View style={styles.btnWrapper}>
-          <Button title="上一页" onPress={() => { this.handlePressPre() }} />
-          <Button title="下一页" onPress={() => { this.handlePressNext() }} />
-        </View>
+
+        <TouchableOpacity
+          style={[styles.touchWrapper, styles.btnPre]}
+          onPress={() => { this.handlePressPre() }}
+        >
+          <Text style={styles.btnText}>&lt;</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.touchWrapper, styles.btnNext]}
+          onPress={() => { this.handlePressNext() }}
+        >
+          <Text style={styles.btnText}>&gt;</Text>
+        </TouchableOpacity>
+
+          {/* <Button title="上一页" onPress={() => { this.handlePressPre() }} />
+          <Button title="下一页" onPress={() => { this.handlePressNext() }} /> */}
       </View>
     )
   }
@@ -88,12 +101,12 @@ class SwiperView extends React.Component<SwiperProps> {
     let { data }: any = this.state
     return data.map((item: Data, ind: number): JSX.Element => {
       return (
-        <ItemView 
+        <ItemView
           key={ind}
           centerIndex={this.centerIndex}
           index={ind}
-          data={item} 
-          scalingArr={this.getItemScaleArr} 
+          data={item}
+          scalingArr={this.getItemScaleArr}
           clickItem={this.handleChooseItem}
         />
       )
