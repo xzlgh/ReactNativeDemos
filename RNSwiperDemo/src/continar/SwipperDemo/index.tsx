@@ -166,13 +166,15 @@ class SwiperView extends React.Component<SwiperProps> {
     // 如果是往后翻，目标值大于显示数据长度时
     if (curIndex < nextIndex && nextIndex > data.length - showItemNumber - 1) {
       // 获取目标index
-      targetIndex = nextIndex - showItemNumber - 1
+      // targetIndex = nextIndex - showItemNumber - 1
+      targetIndex = 2 * showItemNumber + nextIndex - data.length
     }
 
     // 如果是操作往前翻，当目标值小于原始数据的第一个值时
     if (curIndex > nextIndex && nextIndex < showItemNumber) {
       // 获得目标index
-      targetIndex = nextIndex + showItemNumber + 1
+      // targetIndex = nextIndex + showItemNumber + 1
+      targetIndex = data.length - 2 * showItemNumber + nextIndex
     }
 
     targetIndex === -1 ? this.setState({ curIndex: nextIndex }) : this.skilpTo(targetIndex)
