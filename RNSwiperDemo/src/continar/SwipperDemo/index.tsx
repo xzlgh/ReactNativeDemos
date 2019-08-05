@@ -168,7 +168,7 @@ class SwiperView extends React.Component<SwiperProps> {
     const {curIndex}: any = this.state
     const {showItemNumber=config.DEFAULT_ITEM_NUMBER} = this.props
     console.log(curIndex, _targetIndex, 'touchEnd')
-    this.handleChooseItem(curIndex + _targetIndex + Math.floor(showItemNumber / 2))
+    this.handleChooseItem(_targetIndex + Math.floor(showItemNumber / 2))
   }
 
   // 点击具体值
