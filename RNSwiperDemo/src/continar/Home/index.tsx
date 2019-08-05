@@ -14,9 +14,8 @@ class Home extends React.Component<any> {
     return (
       <Swipper 
         sourceData={config.dataSource} 
-        defaultIndex={1}
-        // showItemNumber={3}
-        // widthScale={[0.4, 0.3]}
+        showItemNumber={3}
+        widthScale={[0.34, 0.33]}
       />
     )
   }

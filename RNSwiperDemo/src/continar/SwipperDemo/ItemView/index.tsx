@@ -12,11 +12,12 @@ class ItemView extends React.Component<ItemViewProps> {
 
   static defaultProps = {
     data: {},
-    scalingArr: DEFAULT_ITEM_FIVE_WITH_SCALE
+    scalingArr: DEFAULT_ITEM_FIVE_WITH_SCALE,
+    clickItem: () => {}
   }
 
   render() {
-    const { data, clickItem, index, centerIndex } = this.props
+    const { data, clickItem = () => {}, index, centerIndex } = this.props
     const centerDistance = Math.abs(index - centerIndex)
     const _boxWidth = this.getItemWidth(centerDistance)
     const _contentColor = this.getContentColor(centerDistance)

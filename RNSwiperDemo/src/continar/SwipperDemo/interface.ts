@@ -20,5 +20,5 @@ export interface ItemViewProps {
   index: number,
   data: Data,
   scalingArr: number[],
-  clickItem: Function
+  clickItem?: Function
 }
