@@ -16,10 +16,13 @@ class Home extends React.Component<any> {
         sourceData={config.dataSource} 
         showItemNumber={3}
         widthScale={[0.34, 0.33]}
+        chooseChange={this.chooseItem}
       />
     )
   }
-
+  chooseItem = (value: string) => {
+    console.log(value)
+  }
 }
 
 export default Home

@@ -39,8 +39,7 @@ class SwiperView extends React.Component<SwiperProps> {
     super(props)
 
     this.state = {
-      curIndex: props.showItemNumber - Math.floor(props.showItemNumber / 2) + props.defaultIndex - 1,
-      moveLeft: -(props.showItemNumber - Math.floor(props.showItemNumber / 2) + props.defaultIndex - 1) * this.minItemWidth,
+      curIndex: props.showItemNumber,
       data: utils.turnOfData(props.sourceData, props.showItemNumber),
       sports: new Animated.Value(-(this.minItemWidth * props.showItemNumber))
     }
@@ -55,7 +54,6 @@ class SwiperView extends React.Component<SwiperProps> {
   // get 最小的item宽度
   get minItemWidth() {
     return this.getItemScaleArr[this.getItemScaleArr.length - 1] * config.viewClient.width
-    // return this.getItemWidth(-1)
   }
 
   // get 可视轮播中间内容的索引
@@ -66,11 +64,6 @@ class SwiperView extends React.Component<SwiperProps> {
   
   }
 
-  get currentLeft() {
-    let {curIndex}: any = this.state
-    return -(curIndex * this.minItemWidth)
-  }
-
   componentWillMount() {
     this._panResponder = PanResponder.create({
       // 要求成为响应者：
@@ -78,7 +71,7 @@ class SwiperView extends React.Component<SwiperProps> {
       onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
       onMoveShouldSetPanResponder: (evt, gestureState) => true,
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
-      onShouldBlockNativeResponder: (evt, gestureState) => false,
+      onShouldBlockNativeResponder: (evt, gestureState) => true,
       // 响应事件
       onPanResponderGrant: this._handlePanResponderGrant,
       onPanResponderMove: this._handlePanResponderMove,
@@ -88,15 +81,15 @@ class SwiperView extends React.Component<SwiperProps> {
   }
 
   componentDidMount() {
-    const { curIndex }: any = this.state
-    this.skilpTo(curIndex)
+    const { showItemNumber, defaultIndex }: any = this.props
+    this.skilpTo(showItemNumber - Math.floor(showItemNumber / 2) + defaultIndex - 1)
   }
 
   render() {
     const { sports }: any = this.state
     return (
-      <View style={styles.box} {...this._panResponder.panHandlers}>
-        <View style={styles.swiper}>
+      <View style={styles.box}>
+        <View style={styles.swiper} {...this._panResponder.panHandlers}>
           <Animated.View style={[styles.swiperContain, { left: sports }]}>
             {this.renderItem()}
           </Animated.View>
@@ -105,7 +98,7 @@ class SwiperView extends React.Component<SwiperProps> {
         <TouchableOpacity
           style={[styles.touchWrapper, styles.btnPre]}
           onPress={() => { 
-            // this.handlePressPre() 
+            this.handlePressPre() 
           }}
         >
           <Text style={styles.btnText}>&lt;</Text>
@@ -114,7 +107,7 @@ class SwiperView extends React.Component<SwiperProps> {
         <TouchableOpacity
           style={[styles.touchWrapper, styles.btnNext]}
           onPress={() => { 
-            // this.handlePressNext() 
+            this.handlePressNext() 
           }}
         >
           <Text style={styles.btnText}>&gt;</Text>
@@ -133,7 +126,7 @@ class SwiperView extends React.Component<SwiperProps> {
           index={ind}
           data={item}
           scalingArr={this.getItemScaleArr}
-          // clickItem={this.handleChooseItem}
+          clickItem={this.handleChooseItem}
         />
       )
     })
@@ -142,33 +135,51 @@ class SwiperView extends React.Component<SwiperProps> {
   // 开始手势操作
   _handlePanResponderGrant = (evt: any, gestureState: any) => {
     // 开始手势操作。给用户一些视觉反馈，让他们知道发生了什么事情！
-    // gestureState.{x,y} 现在会被设置为0
-    
-    console.log(gestureState.dx, '_handlePanResponderGrant')    
+    // gestureState.{x,y} 现在会被设置为0    
     this.startTime = evt.nativeEvent.timestamp
   }
   // 手势move事件
   _handlePanResponderMove = (evt:any, gestureState: any) => {
     // 最近一次的移动距离为gestureState.move{X,Y}
     // 从成为响应者开始时的累计手势移动距离为gestureState.d{x,y}
-
-    console.log(gestureState.dx, '_handlePanResponderMove')    
-    let _left = this.currentLeft + gestureState.dx
+    const {curIndex}: any = this.state
+    let _left = (-curIndex * this.minItemWidth)+ gestureState.dx
     this.moveTo(_left)
   }
   // 触摸操作结束
   _handlePanResponderEnd = (evt: any, gestureState: any) => {
     // 用户放开了所有的触摸点，且此时视图已经成为了响应者。或者 另一个组件已经成为了新的响应者，所以当前手势将被取消。
     // 一般来说这意味着一个手势操作已经成功完成。
-    console.log(gestureState.dx, '_handlePanResponderEnd')
-    // 处理curIndex的值
+
+    const {showItemNumber=config.DEFAULT_ITEM_NUMBER} = this.props    
+    const {curIndex}: any = this.state    
     let x = gestureState.dx
-    let _step = Math.max(Math.abs(x / this.minItemWidth), Math.abs(Math.round(x / this.minItemWidth)))
-    let _targetIndex = x > 0 ? _step : -_step
-    const {curIndex}: any = this.state
-    const {showItemNumber=config.DEFAULT_ITEM_NUMBER} = this.props
-    console.log(curIndex, _targetIndex, 'touchEnd')
-    this.handleChooseItem(_targetIndex + Math.floor(showItemNumber / 2))
+    let pageX = evt.nativeEvent.pageX    
+
+    // 计算滑动到的目标位置, 最大滑动的距离为显示的数据个数    
+    let _step = Math.min(Math.abs(Math.round(x / this.minItemWidth)), showItemNumber)
+    let _targetStep = x > 0 ? -_step : _step
+
+    
+    // 如果滑动目标个数为0，且有点击，检查点击位置
+    if (_targetStep === 0) {
+      // 获取目标位置到当前curIndex的数据个数
+      let _leftStep = utils.getStepToLeft(pageX, showItemNumber, this.getItemScaleArr)
+      console.log( curIndex, _leftStep, this.centerIndex, '距离左侧的元素个数值')
+      // 执行点击操作
+      this.handleChooseItem(curIndex + _leftStep - 1)
+      return
+    }
+
+    // 滑动到目标位置
+    this.starAnimated({
+      toValue: -(curIndex + _targetStep) * this.minItemWidth,
+      duration: 200
+    }, () => {
+      // 滑到目标位置后，检查循环边界
+      this.handleLoop(curIndex + _targetStep)
+    })
+
   }
 
   // 点击具体值
@@ -184,10 +195,11 @@ class SwiperView extends React.Component<SwiperProps> {
 
   // 下一个
   handlePressNext = (skipTimes: number = 1) => {
-    const { curIndex }: any = this.state
-    console.log(curIndex)
+    const {chooseChange = () => {}} = this.props
+    const { curIndex, data }: any = this.state
     const value = -curIndex * this.minItemWidth - skipTimes * this.minItemWidth
 
+    chooseChange(data[this.centerIndex + skipTimes]) 
     this.starAnimated({ toValue: value }, () => {
       this.handleLoop(curIndex + skipTimes)
     })
@@ -195,9 +207,11 @@ class SwiperView extends React.Component<SwiperProps> {
 
   // 上一个
   handlePressPre = (skipTimes: number = 1) => {
-    const { curIndex }: any = this.state
+    const {chooseChange = () => {}} = this.props
+    const { curIndex, data }: any = this.state
     const value = -curIndex * this.minItemWidth + skipTimes * this.minItemWidth
 
+    chooseChange(data[this.centerIndex - skipTimes])          
     this.starAnimated({ toValue: value }, () => {
       this.handleLoop(curIndex - skipTimes)
     })
@@ -217,31 +231,27 @@ class SwiperView extends React.Component<SwiperProps> {
 
   // 处理循环边界问题
   handleLoop = (nextIndex: number) => {
-    const { showItemNumber }: any = this.props
-    const { data, curIndex }: any = this.state
+    const { showItemNumber, sourceData }: any = this.props
+    const { curIndex }: any = this.state
+    let sourceLength = sourceData.length
+    let _targetIndex = -1
 
-    let targetIndex = -1
-    // 如果是往后翻，目标值大于显示数据长度时
-    if (curIndex < nextIndex && nextIndex > data.length - showItemNumber - 1) {
-      // 获取目标index
-      // targetIndex = nextIndex - showItemNumber - 1
-      targetIndex = 2 * showItemNumber + nextIndex - data.length
+    // 往前翻
+    if ((nextIndex < curIndex) && (nextIndex < showItemNumber)) {
+      _targetIndex = showItemNumber + sourceLength - 1
     }
 
-    // 如果是操作往前翻，当目标值小于原始数据的第一个值时
-    if (curIndex > nextIndex && nextIndex < showItemNumber) {
-      // 获得目标index
-      // targetIndex = nextIndex + showItemNumber + 1
-      targetIndex = data.length - 2 * showItemNumber + nextIndex
-    }
+    // 往后翻
+    if ((nextIndex > curIndex) && (nextIndex >= showItemNumber + sourceLength)) {
+      _targetIndex = nextIndex - sourceLength
+    } 
 
-    targetIndex === -1 ? this.setState({ curIndex: nextIndex }) : this.skilpTo(targetIndex)
+    _targetIndex === -1 ? this.setState({curIndex: nextIndex}) : this.skilpTo(_targetIndex)
   }
 
   // move到指定的值
   moveTo = (targetLeft: number) => {
     this.setState({
-      // moveLeft: targetLeft,
       sports: new Animated.Value(targetLeft)
     })
   }

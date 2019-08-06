@@ -1,3 +1,8 @@
+/**
+ * @author xiongzilian(xiongzilian@mintechai.com)
+ * @file 实现轮播中每一项内容的渲染
+ */
+
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { ItemViewProps } from '../interface'  
@@ -37,7 +42,9 @@ class ItemView extends React.Component<ItemViewProps> {
 
   // 获取组件盒子的字体大小
   getContentFontSize = (centerDistance: number): number => {
-    const scales = this.props.scalingArr
+    // const scales = this.props.scalingArr
+    // TODO 后期修改,作为传递进来的值
+    const scales = [0.64, 0.36]
     return (scales[centerDistance] || scales[scales.length - 1]) * DEFAULT_CONTENT_FONT_SIZE
   }
 
