@@ -29,8 +29,9 @@ class SwiperView extends React.Component<SwiperProps> {
   _panResponder: any
   startTime: any
   endTime: any
+  frontPaddingLength: any
   static defaultProps = {
-    defaultIndex: 1,
+    defaultIndex: 0,
     sourceData: [],
     showItemNumber: config.DEFAULT_ITEM_NUMBER
   }
@@ -38,11 +39,14 @@ class SwiperView extends React.Component<SwiperProps> {
   constructor(props: any) {
     super(props)
 
+    let font = props.showItemNumber + Math.floor(props.showItemNumber / 2);
+
     this.state = {
-      curIndex: props.showItemNumber,
+      curIndex: font + props.defaultIndex - 1,
       data: utils.turnOfData(props.sourceData, props.showItemNumber),
       sports: new Animated.Value(-(this.minItemWidth * props.showItemNumber))
     }
+    this.frontPaddingLength = font
   }
 
   // 获取可视的多个轮播宽度缩放比
@@ -81,8 +85,9 @@ class SwiperView extends React.Component<SwiperProps> {
   }
 
   componentDidMount() {
-    const { showItemNumber, defaultIndex }: any = this.props
-    this.skilpTo(showItemNumber - Math.floor(showItemNumber / 2) + defaultIndex - 1)
+    // const { showItemNumber, defaultIndex }: any = this.props
+    const { curIndex, data }:any = this.state
+    this.skilpTo(curIndex)
   }
 
   render() {
@@ -231,18 +236,18 @@ class SwiperView extends React.Component<SwiperProps> {
 
   // 处理循环边界问题
   handleLoop = (nextIndex: number) => {
-    const { showItemNumber, sourceData }: any = this.props
+    const { sourceData }: any = this.props
     const { curIndex }: any = this.state
     let sourceLength = sourceData.length
     let _targetIndex = -1
 
     // 往前翻
-    if ((nextIndex < curIndex) && (nextIndex < showItemNumber)) {
-      _targetIndex = showItemNumber + sourceLength - 1
+    if ((nextIndex < curIndex) && (nextIndex < this.frontPaddingLength)) {
+      _targetIndex = sourceLength + nextIndex
     }
 
     // 往后翻
-    if ((nextIndex > curIndex) && (nextIndex >= showItemNumber + sourceLength)) {
+    if ((nextIndex > curIndex) && (nextIndex >= this.frontPaddingLength + sourceLength)) {
       _targetIndex = nextIndex - sourceLength
     } 
 

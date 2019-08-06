@@ -15,8 +15,6 @@ import {
  * @param scaleArr 元素缩放比： [中间，相邻，间隔1，间隔2,...]
  */
 export const getStepToLeft = (pageX: number, showNumber: number, scaleArr: number[]) => {
-  // 屏幕宽度中线的x坐标值
-  const centerX = client.width / 2
   // 显示内容中间值的元素序号
   const centerIndex = Math.floor(showNumber / 2)
   let _x = 0
@@ -39,7 +37,7 @@ export const turnOfData = (data: Data[], showNumber: number) => {
   let rawLen = data.length
   // let endPaddingLength = showNumber + Math.max(0, showNumber - rawLen)
   let endPaddingLength = 2 * showNumber
-  let frontPaddingLength = showNumber
+  let frontPaddingLength = showNumber + Math.floor(showNumber / 2)
   let result = []
   let revertData = data.slice().reverse()
   // 补前面的值
