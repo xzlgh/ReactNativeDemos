@@ -16,14 +16,6 @@ class ItemView extends React.Component<ItemViewProps> {
     clickItem: () => {}
   }
 
-  constructor(props: ItemViewProps) {
-    super(props)
-    this.state = {
-      mapIndex: props.index,
-      centerIndex: props.centerIndex
-    }
-  }
-
   render() {
     const { data, clickItem = () => {}, index, centerIndex } = this.props
     const centerDistance = Math.abs(index - centerIndex)
