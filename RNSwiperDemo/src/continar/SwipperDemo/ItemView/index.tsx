@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, Animated } from 'react-native'
 import { ItemViewProps } from '../interface'  
 import { 
   DEFAULT_ITEM_FIVE_WITH_SCALE,
@@ -20,19 +20,30 @@ class ItemView extends React.Component<ItemViewProps> {
     super(props)
     this.state = {
       mapIndex: props.index,
-      centerIndex: props.centerIndex
+      centerIndex: props.centerIndex,
+      boxWidth: 0,
+      fontSize: new Animated.Value(0)
     }
   }
 
+  componentDidMount() {
+    const { mapIndex, centerIndex}: any = this.state
+    const centerDistance = Math.abs(mapIndex - centerIndex)
+    this.setState({
+      boxWidth: this.getItemWidth(centerDistance),
+      // fontSize: new Animated.Value(this.getContentFontSize(centerDistance))
+    })
+  }
+
   render() {
-    const { data, clickItem = () => {}, index, centerIndex } = this.props
-    const centerDistance = Math.abs(index - centerIndex)
-    const _boxWidth = this.getItemWidth(centerDistance)
-    const _contentColor = this.getContentColor(centerDistance)
-    const _contentFontSize = this.getContentFontSize(centerDistance)
+    const { data } = this.props    
+    const { fontSize, boxWidth }: any = this.state
+    // const _boxWidth = this.getItemWidth(centerDistance)
+    // const _contentColor = this.getContentColor(centerDistance)
+    // const _contentFontSize = this.getContentFontSize(centerDistance)
     return (
-      <View style={[styles.item, {width: _boxWidth}]}>
-        <Text style={[styles.itemContent, {color: _contentColor, fontSize: _contentFontSize}]} onPress={() => { clickItem(index) }}>
+      <View style={[styles.item, {width: boxWidth}]}>
+        <Text style={[styles.itemContent, {fontSize: fontSize}]}>
           {data.text}
         </Text>
       </View>
@@ -40,7 +51,15 @@ class ItemView extends React.Component<ItemViewProps> {
   }
 
   // TODO 文字字体大小动画
+  // 放大动画
+  blowUpFontSize = () => {
 
+  }
+
+  // 缩小动画
+  shrinkFontSize = () => {
+    
+  }
   // TODO 文字颜色动画
 
   // 获取组件盒子的字体大小

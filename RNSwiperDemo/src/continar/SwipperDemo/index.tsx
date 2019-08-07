@@ -131,7 +131,6 @@ class SwiperView extends React.Component<SwiperProps> {
           index={ind}
           data={item}
           scalingArr={this.getItemScaleArr}
-          clickItem={this.handleChooseItem}
         />
       )
     })
