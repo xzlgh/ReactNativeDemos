@@ -26,7 +26,7 @@ class ItemView extends React.Component<ItemViewProps> {
   }
 
   shouldComponentUpdate(nextProps: any) {
-    return this.props.centerIndex !== nextProps.centerIndex || this.props.offset !== nextProps.offset
+    return this.props.centerIndex !== nextProps.centerIndex
   }
 
   render() {
@@ -57,17 +57,10 @@ class ItemView extends React.Component<ItemViewProps> {
 
   // 获取组件盒子的字体大小
   getContentFontSize = (centerDistance: number): number => {
-    const { offset } = this.props    
     // const scales = this.props.scalingArr
     // TODO 后期修改,作为传递进来的值
     const scales = [0.64, 0.36]
-    let scale = (scales[centerDistance] || scales[scales.length - 1])
-    if(centerDistance === 0) {
-      scale -= Math.abs(0.28 * offset / DEFAULT_CONTENT_FONT_SIZE)
-    }
-    const size = scale * DEFAULT_CONTENT_FONT_SIZE
-
-    return size
+    return (scales[centerDistance] || scales[scales.length - 1]) * DEFAULT_CONTENT_FONT_SIZE
   }
 
   // 获取组件盒子的文字颜色
@@ -88,8 +81,7 @@ export default ItemView
 
 export const styles = StyleSheet.create({
   item: {
-    justifyContent: 'center',
-    height: 50
+    justifyContent: 'center'
   },
 
   itemContent: {

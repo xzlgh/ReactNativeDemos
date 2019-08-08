@@ -21,5 +21,4 @@ export interface ItemViewProps {
   index: number,
   data: Data,
   scalingArr: number[],
-  offset: number
 }

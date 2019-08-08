@@ -33,7 +33,7 @@ class SwiperView extends React.Component<SwiperProps> {
   static defaultProps = {
     defaultIndex: 0,
     sourceData: [],
-    showItemNumber: config.DEFAULT_ITEM_NUMBER,
+    showItemNumber: config.DEFAULT_ITEM_NUMBER
   }
 
   constructor(props: any) {
@@ -44,8 +44,7 @@ class SwiperView extends React.Component<SwiperProps> {
     this.state = {
       curIndex: font + props.defaultIndex - 1,
       data: utils.turnOfData(props.sourceData, props.showItemNumber),
-      sports: new Animated.Value(-(this.minItemWidth * props.showItemNumber)),
-      offset: 0
+      sports: new Animated.Value(-(this.minItemWidth * props.showItemNumber))
     }
     this.frontPaddingLength = font
   }
@@ -123,11 +122,10 @@ class SwiperView extends React.Component<SwiperProps> {
   }
 
   renderItem = (): JSX.Element[] => {
-    let { data, offset }: any = this.state
+    let { data }: any = this.state
     return data.map((item: Data, ind: number): JSX.Element => {
       return (
         <ItemView
-          offset={offset}
           key={ind}
           centerIndex={this.centerIndex}
           index={ind}
@@ -138,15 +136,11 @@ class SwiperView extends React.Component<SwiperProps> {
     })
   }
 
-  start = 0
   // 开始手势操作
   _handlePanResponderGrant = (evt: any, gestureState: any) => {
     // 开始手势操作。给用户一些视觉反馈，让他们知道发生了什么事情！
     // gestureState.{x,y} 现在会被设置为0    
     this.startTime = evt.nativeEvent.timestamp
-    const {curIndex}: any = this.state
-    let _left = (-curIndex * this.minItemWidth)+ gestureState.dx
-    this.start = _left
   }
   // 手势move事件
   _handlePanResponderMove = (evt:any, gestureState: any) => {
@@ -155,7 +149,6 @@ class SwiperView extends React.Component<SwiperProps> {
     const {curIndex}: any = this.state
     let _left = (-curIndex * this.minItemWidth)+ gestureState.dx
     this.moveTo(_left)
-    this.setState({offset: this.start - _left})
   }
   // 触摸操作结束
   _handlePanResponderEnd = (evt: any, gestureState: any) => {
@@ -195,7 +188,6 @@ class SwiperView extends React.Component<SwiperProps> {
       toValue: -_targetIndex * this.minItemWidth,
       duration: _duration
     }, () => {
-      this.setState({offset: 0})
       // 滑到目标位置后，检查循环边界
       this.handleLoop(curIndex, _targetIndex)
     })
