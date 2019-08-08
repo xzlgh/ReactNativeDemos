@@ -21,45 +21,38 @@ class ItemView extends React.Component<ItemViewProps> {
     this.state = {
       mapIndex: props.index,
       centerIndex: props.centerIndex,
-      boxWidth: 0,
-      fontSize: new Animated.Value(0)
+      fontSize: 0
     }
   }
 
-  componentDidMount() {
-    const { mapIndex, centerIndex}: any = this.state
-    const centerDistance = Math.abs(mapIndex - centerIndex)
-    this.setState({
-      boxWidth: this.getItemWidth(centerDistance),
-      // fontSize: new Animated.Value(this.getContentFontSize(centerDistance))
-    })
+  shouldComponentUpdate(nextProps: any) {
+    return this.props.centerIndex !== nextProps.centerIndex
   }
 
   render() {
-    const { data } = this.props    
-    const { fontSize, boxWidth }: any = this.state
-    // const _boxWidth = this.getItemWidth(centerDistance)
-    // const _contentColor = this.getContentColor(centerDistance)
-    // const _contentFontSize = this.getContentFontSize(centerDistance)
+    const { data, index, centerIndex } = this.props    
+    const centerDistance = Math.abs(index - centerIndex)
+    const boxWidth = this.getItemWidth(centerDistance)
+
+    const fontSize = this.geCurFontSize(centerDistance)
+    const color = this.getContentColor(centerDistance)
+
     return (
       <View style={[styles.item, {width: boxWidth}]}>
-        <Text style={[styles.itemContent, {fontSize: fontSize}]}>
+        <Animated.Text style={[styles.itemContent, {fontSize, color}]}>
           {data.text}
-        </Text>
+        </Animated.Text>
       </View>
     )
   }
 
   // TODO 文字字体大小动画
-  // 放大动画
-  blowUpFontSize = () => {
-
+  geCurFontSize = (centerDistance: number=-1) => {
+    let _curFontSize = this.getContentFontSize(centerDistance)
+    // this.setState({fontSize: _curFontSize})
+    return new Animated.Value(_curFontSize)
   }
 
-  // 缩小动画
-  shrinkFontSize = () => {
-    
-  }
   // TODO 文字颜色动画
 
   // 获取组件盒子的字体大小
