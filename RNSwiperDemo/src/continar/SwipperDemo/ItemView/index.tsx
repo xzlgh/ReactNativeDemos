@@ -31,7 +31,7 @@ class ItemView extends React.Component<ItemViewProps> {
 
   render() {
     const { data, index, centerIndex } = this.props    
-    const centerDistance = Math.abs(index - centerIndex)
+    const centerDistance = index - centerIndex
     const boxWidth = this.getItemWidth(centerDistance)
 
     const fontSize = this.geCurFontSize(centerDistance)
@@ -57,14 +57,30 @@ class ItemView extends React.Component<ItemViewProps> {
 
   // 获取组件盒子的字体大小
   getContentFontSize = (centerDistance: number): number => {
+    let _distance = Math.abs(centerDistance)
+    let _boxWidth = this.getItemWidth(centerDistance)
     const { offset } = this.props    
-    // const scales = this.props.scalingArr
-    // TODO 后期修改,作为传递进来的值
     const scales = [0.64, 0.36]
-    let scale = (scales[centerDistance] || scales[scales.length - 1])
-    if(centerDistance === 0) {
-      scale -= Math.abs(0.28 * offset / DEFAULT_CONTENT_FONT_SIZE)
+    let scale = (scales[_distance] || scales[scales.length - 1])
+
+    // let size = 0
+
+    // if (offset === 0) {
+    //   size = scale * DEFAULT_CONTENT_FONT_SIZE
+    // } else {
+    //   size = _distance === 0 
+    //       ? Math.max(0.36 * DEFAULT_CONTENT_FONT_SIZE, Math.abs(scale * offset * DEFAULT_CONTENT_FONT_SIZE / _boxWidth) )
+    //       : Math.min(0.64 * DEFAULT_CONTENT_FONT_SIZE, Math.abs(scale * offset * DEFAULT_CONTENT_FONT_SIZE / _boxWidth))
+    // }
+
+    if(_distance === 0) {
+      scale -= Math.abs(0.24 * offset / DEFAULT_CONTENT_FONT_SIZE)
+      scale = Math.max(0.36, scale)
+    } else if ((centerDistance === 1 && offset < 0) || (centerDistance === -1 && offset > 0)) {
+      scale += Math.abs(0.24 * offset / DEFAULT_CONTENT_FONT_SIZE)
+      scale = Math.min(0.64, scale)
     }
+
     const size = scale * DEFAULT_CONTENT_FONT_SIZE
 
     return size
@@ -72,14 +88,16 @@ class ItemView extends React.Component<ItemViewProps> {
 
   // 获取组件盒子的文字颜色
   getContentColor = (centerDistance: number): string => {
+    let _distance = Math.abs(centerDistance)
     let _arr = DEFAULT_ITEM_CONTENT_COLOR_ARRAY
-    return _arr[centerDistance] || _arr[_arr.length - 1]
+    return _arr[_distance] || _arr[_arr.length - 1]
   }
 
   // 获取组件盒子宽度
   getItemWidth = (centerDistance: number): number => {
+    let _distance = Math.abs(centerDistance)
     const scales = this.props.scalingArr
-    return (scales[centerDistance] || scales[scales.length - 1]) * viewClient.width
+    return (scales[_distance] || scales[scales.length - 1]) * viewClient.width
   }
 }
 
