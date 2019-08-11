@@ -13,7 +13,8 @@ export interface SwiperProps {
 
 export interface StartAnimatedOptions {
   toValue: number,
-  duration?: number
+  duration?: number,
+  offset?: boolean
 }
 
 export interface ItemViewProps {

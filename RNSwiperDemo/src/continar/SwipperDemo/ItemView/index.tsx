@@ -63,16 +63,6 @@ class ItemView extends React.Component<ItemViewProps> {
     const scales = [0.64, 0.36]
     let scale = (scales[_distance] || scales[scales.length - 1])
 
-    // let size = 0
-
-    // if (offset === 0) {
-    //   size = scale * DEFAULT_CONTENT_FONT_SIZE
-    // } else {
-    //   size = _distance === 0 
-    //       ? Math.max(0.36 * DEFAULT_CONTENT_FONT_SIZE, Math.abs(scale * offset * DEFAULT_CONTENT_FONT_SIZE / _boxWidth) )
-    //       : Math.min(0.64 * DEFAULT_CONTENT_FONT_SIZE, Math.abs(scale * offset * DEFAULT_CONTENT_FONT_SIZE / _boxWidth))
-    // }
-
     if(_distance === 0) {
       scale -= Math.abs(0.24 * offset / DEFAULT_CONTENT_FONT_SIZE)
       scale = Math.max(0.36, scale)

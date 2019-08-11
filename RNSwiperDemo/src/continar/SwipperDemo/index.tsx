@@ -2,13 +2,9 @@ import React from 'react'
 import {
   View,
   Text,
-  Button,
-  Image,
   TouchableOpacity,
   Easing,
   Animated,
-  StyleSheet,
-  Dimensions,
   PanResponder
 } from 'react-native';
 
@@ -96,33 +92,42 @@ class SwiperView extends React.Component<SwiperProps> {
     this.skilpTo(curIndex)
   }
 
+  count = 0
   render() {
-    const { sports }: any = this.state
+    const { sports, curIndex, offset }: any = this.state
     return (
-      <View style={styles.box}>
-        <View style={styles.swiper} {...this._panResponder.panHandlers}>
-          <Animated.View style={[styles.swiperContain, { left: sports }]}>
-            {this.renderItem()}
-          </Animated.View>
+      <View>
+        <View>
+          <Text >{`count: ${this.count++}`}</Text>
+          <Text >{`offset: ${offset}`}</Text>
+          <Text >{`curIndex: ${curIndex}`}</Text>
+          <Text >{`centerIndex: ${this.centerIndex}`}</Text>
         </View>
+        <View style={styles.box}>
+          <View style={styles.swiper} {...this._panResponder.panHandlers}>
+            <Animated.View style={[styles.swiperContain, { left: sports }]}>
+              {this.renderItem()}
+            </Animated.View>
+          </View>
 
-        <TouchableOpacity
-          style={[styles.touchWrapper, styles.btnPre]}
-          onPress={() => { 
-            this.handlePressBtn(-1) 
-          }}
-        >
-          <Text style={styles.btnText}>&lt;</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.touchWrapper, styles.btnPre]}
+            onPress={() => { 
+              this.handlePressBtn(-1) 
+            }}
+          >
+            <Text style={styles.btnText}>&lt;</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[styles.touchWrapper, styles.btnNext]}
-          onPress={() => { 
-            this.handlePressBtn(1) 
-          }}
-        >
-          <Text style={styles.btnText}>&gt;</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.touchWrapper, styles.btnNext]}
+            onPress={() => { 
+              this.handlePressBtn(1) 
+            }}
+          >
+            <Text style={styles.btnText}>&gt;</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     )
   }
@@ -183,7 +188,6 @@ class SwiperView extends React.Component<SwiperProps> {
     // 确定选中的内容
     chooseChange(this.data[_tounchEndData.targetIndex + Math.floor(showItemNumber / 2)])
     this.starAnimated(_tounchEndData, () => {
-      // this.setState({offset: 0, moveCenterIndex: -1})
       this.handleLoop(curIndex, _tounchEndData.targetIndex)
     })
   }
@@ -212,46 +216,6 @@ class SwiperView extends React.Component<SwiperProps> {
     }
   }
 
-  // 触摸操作结束
-  // _handlePanResponderEnd1 = (evt: any, gestureState: any) => {
-  //   const { showItemNumber = config.DEFAULT_ITEM_NUMBER, chooseChange = () => {}} = this.props    
-  //   const {curIndex}: any = this.state    
-  //   this.endTime = evt.nativeEvent.timestamp
-  //   let dx = gestureState.dx
-  //   let pageX = evt.nativeEvent.pageX
-  //   let _duration = 200
-
-  //   // 计算滑动到的目标位置, 最大滑动的距离为显示的数据个数
-  //   let _step = Math.min(Math.abs(Math.round(dx / this.minItemWidth)), showItemNumber)
-  //   let _targetStep = dx > 0 ? -_step : _step
-
-  //   // 如果用户触摸屏幕时间小于300ms，则只滑动一个
-  //   if (dx !== 0 && _targetStep === 0 && this.endTime - this.startTime < 300) {
-  //     _targetStep = dx > 0 ? -1 : 1
-  //     _duration = 400
-  //   // 如果滑动目标个数为0，且有点击，检查点击位置    
-  //   } else if (dx === 0 && _targetStep === 0) {
-  //     // 获取目标位置到当前curIndex的数据个数
-  //     let _leftStep = utils.getStepToLeft(pageX, showItemNumber, this.getItemScaleArr)
-  //     // 执行点击操作
-  //     this.handleChooseItem(curIndex + _leftStep - 1)
-  //     return
-  //   }
-
-  //   let _targetIndex = curIndex + _targetStep
-
-  //   chooseChange(this.data[_targetIndex + Math.floor(showItemNumber / 2)])
-  //   // 滑动到目标位置
-  //   this.starAnimated({
-  //     toValue: -_targetIndex * this.minItemWidth,
-  //     duration: _duration
-  //   }, () => {
-  //     this.setState({offset: 0, curIndex: _targetIndex})
-  //     // 滑到目标位置后，检查循环边界
-  //     this.handleLoop(curIndex, _targetIndex)
-  //   })
-  // }
-
   // 点击具体值
   handleChooseItem = (clickIndex: number) => {
     // 跳转个数
@@ -271,7 +235,7 @@ class SwiperView extends React.Component<SwiperProps> {
     const value = -(curIndex * this.minItemWidth) - skipTimes * this.minItemWidth
 
     chooseChange(this.data[this.centerIndex + skipTimes])
-    this.starAnimated({ toValue: value }, () => {
+    this.starAnimated({ toValue: value, offset: true }, () => {
       this.handleLoop(curIndex, nextIndex)
     })
   }
@@ -310,10 +274,9 @@ class SwiperView extends React.Component<SwiperProps> {
       callback()
     })
 
-    sports.addListener(({value}: any) => {
+    options.offset === true && sports.addListener(({value}: any) => {
       let _distance = value - curLeft
       this.setState({offset: _distance, moveCenterIndex: -1})
-      console.log('我在执行动画', value)
     })
   }
 
