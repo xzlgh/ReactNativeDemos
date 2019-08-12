@@ -1,7 +1,8 @@
 import React from 'react'
 import { View, Text, TouchableOpacity, Button, StyleSheet  } from "react-native";
 import Toast from '../../Components/Toast'
-import Swipper from '../SwipperDemo'
+// import Swipper from '../SwipperDemo'
+import Carousel from '../Carousel'
 
 import * as config from './config'
 
@@ -12,11 +13,8 @@ class Home extends React.Component<any> {
   }
   render() {
     return (
-      <Swipper 
-        sourceData={config.dataSource} 
-        showItemNumber={3}
-        widthScale={[0.34, 0.33]}
-        chooseChange={this.chooseItem}
+      <Carousel 
+        sourceData={config.sourceData}
       />
     )
   }

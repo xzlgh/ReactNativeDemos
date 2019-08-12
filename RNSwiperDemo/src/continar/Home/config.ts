@@ -1,3 +1,6 @@
+export const sourceData = ['一月', '二月', '三月', '四月']
+
+
 export const dataSource = [
   {
     text: '一月'
