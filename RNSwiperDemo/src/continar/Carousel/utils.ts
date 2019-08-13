@@ -1,4 +1,5 @@
 
+// 转换渲染时的数组
 export const getRenderData = (sourceData: string[], containerAccount: number, isLoop: boolean): string[] => {
   if (!sourceData || sourceData.length === 0) return []
   let _rawLen = sourceData.length, result = []
@@ -25,7 +26,7 @@ export const getRenderData = (sourceData: string[], containerAccount: number, is
     result.push(sourceData[i % _rawLen])
   }
 
-  return sourceData
+  return result
 }
 
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, TouchableOpacity, Button, StyleSheet  } from "react-native";
+import { View, Text, TouchableOpacity, Button, StyleSheet, Dimensions } from "react-native";
 import Toast from '../../Components/Toast'
 // import Swipper from '../SwipperDemo'
 import Carousel from '../Carousel'
@@ -13,9 +13,14 @@ class Home extends React.Component<any> {
   }
   render() {
     return (
-      <Carousel 
-        sourceData={config.sourceData}
-      />
+      <View style={{alignItems: 'center', justifyContent: 'center'}}>
+        <View style={{width: Dimensions.get('window').width - 40}}>
+          <Carousel 
+            sourceData={config.sourceData}
+            boxStyles={{height: 80}}
+          />
+        </View>
+      </View>
     )
   }
   chooseItem = (value: string) => {
