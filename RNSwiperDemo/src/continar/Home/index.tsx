@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, TouchableOpacity, Button, StyleSheet, Dimensions } from "react-native";
+import { View, Text, TouchableOpacity, Button, StyleSheet, Dimensions, Linking } from "react-native";
 import Toast from '../../Components/Toast'
 // import Swipper from '../SwipperDemo'
 import Carousel from '../Carousel'
@@ -19,12 +19,17 @@ class Home extends React.Component<any> {
             sourceData={config.sourceData}
             boxStyles={{height: 80}}
           />
+          <Button title="点我 跳转到mobikwik" onPress={this.linOptertor}/>
         </View>
       </View>
     )
   }
   chooseItem = (value: string) => {
     console.log(value)
+  }
+
+  linOptertor = () => {
+    
   }
 }
 
