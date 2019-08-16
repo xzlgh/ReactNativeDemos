@@ -36,7 +36,6 @@ function submitForm(){
 <input type="hidden" name="orderId", value="QY1565945861891779376">
 <input type="hidden" name="returnUrl", value="http://www.villeboss.com:10080/api/user/callback?">
 <input type="hidden" name="amount", value="5000">
-<input type="hidden" name="merchantIdentifier", value="e5514f154a2243a98ec7767878b90e52">
 <input type="hidden" name="checksum", value="c0d9bd863284351bcc2e37358cc66ba305935a372a8b48642e4b6f2490091991">
 </form>
 		</td>
@@ -71,7 +70,6 @@ function submitForm(){
       "currency": 'INR',
       "orderId": 'QY1565945861891779376',
       "returnUrl": 'http://www.villeboss.com:10080/api/user/callback?',
-      "merchantIdentifier": 'e5514f154a2243a98ec7767878b90e52',
       "checksum": 'c0d9bd863284351bcc2e37358cc66ba305935a372a8b48642e4b6f2490091991'
     }
     let _tmpArr = []
