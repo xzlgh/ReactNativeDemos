@@ -31,12 +31,12 @@ function submitForm(){
 	<tr>
 		<td align="center" valign="middle">
 			<form action="https://api.zaakpay.com/api/paymentTransact/V7" method="post">
-<input type="hidden" name="buyerEmail", value="songwei@mintechai.com">
+<input type="hidden" name="buyerEmail", value="frsg@xxxx.com">
 <input type="hidden" name="currency", value="INR">
-<input type="hidden" name="orderId", value="QY1565945861891779376">
-<input type="hidden" name="returnUrl", value="http://www.villeboss.com:10080/api/user/callback?">
+<input type="hidden" name="orderId", value="QY1455685frwe">
+<input type="hidden" name="returnUrl", value="http://www.frse.com:10080/api/user/callback?">
 <input type="hidden" name="amount", value="5000">
-<input type="hidden" name="checksum", value="c0d9bd863284351bcc2e37358cc66ba305935a372a8b48642e4b6f2490091991">
+<input type="hidden" name="checksum", value="rgsrgserg3435234frwefw3">
 </form>
 		</td>
 	</tr>
@@ -66,11 +66,11 @@ function submitForm(){
     let url = 'https://api.zaakpay.com/api/paymentTransact/V7'
     const options: any = {
       "amount": '5000',
-      "buyerEmail": 'songwei@mintechai.com',
+      "buyerEmail": 'fsegsr@xxxxx.com',
       "currency": 'INR',
-      "orderId": 'QY1565945861891779376',
-      "returnUrl": 'http://www.villeboss.com:10080/api/user/callback?',
-      "checksum": 'c0d9bd863284351bcc2e37358cc66ba305935a372a8b48642e4b6f2490091991'
+      "orderId": '02553366652',
+      "returnUrl": 'http://www.gsergser.com:10080/api/user/callback?',
+      "checksum": 'gsr152sergs5s2eg5serg2sersfdv'
     }
     let _tmpArr = []
     for (let key in options) {
